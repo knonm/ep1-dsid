@@ -1,5 +1,7 @@
 package br.usp.ep1.dsid;
 
+import java.util.List;
+
 import java.io.Serializable;
 
 public class PartImpl implements Part, Serializable {
@@ -7,8 +9,8 @@ public class PartImpl implements Part, Serializable {
   private long id;
   private String name;
   private String desc;
-  private Part[] subPart;
-  private int[] quant;
+  private List<Part> subPart;
+  private int quant;
   
   public long getId() {
     return this.id;
@@ -31,17 +33,17 @@ public class PartImpl implements Part, Serializable {
     this.desc = desc;
   }
   
-  public Part[] getSubPart() {
+  public List<Part> getSubPart() {
     return this.subPart;
   }
-  public void setSubPart(Part[] subPart) {
+  public void setSubPart(List<Part> subPart) {
     this.subPart = subPart;
   }
   
-  public int[] getQuant() {
+  public int getQuant() {
     return this.quant;
   }
-  public void setQuant(int[] quant) {
+  public void setQuant(int quant) {
     this.quant = quant;
   }
 }

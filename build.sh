@@ -1,10 +1,10 @@
 #!/bin/bash
-classfiles_path="build"
+v_class_path="./build"
+v_source_path="./src"
 
-mkdir ${classfiles_path} 2>/dev/null
-mkdir tmp 2>/dev/null
+mkdir -p ${v_class_path} 2>/dev/null
 
-for src_java in $(find ./src -name "*.java")
+for src_java in $(find ${v_source_path} -name "*.java")
 do
-  javac -sourcepath ./src -d ./${classfiles_path} ${src_java}
+  javac -sourcepath ${v_source_path} -d ${v_class_path} ${src_java}
 done
