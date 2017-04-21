@@ -12,9 +12,10 @@ public class Client {
   
   private Client() {}
   
+  /*
   public void bind(String repoName) {
-    this.partRepo = (PartRepository) registry.lookup(repoName);
-  }
+	  this.partRepo = (PartRepository) registry.lookup(repoName);
+  }*/
   
   public void listp() {
     Iterator<Part> it = this.partRepo.getPartList().values().iterator();
@@ -42,7 +43,7 @@ public class Client {
     System.out.println(tab + "Description: " + p.getDesc());
     System.out.println(tab + "Part quantity: " + p.getQuant());
     
-    if (p.getSubPart() != null && p.getSubPart().length > 0) {
+    if (p.getSubPart() != null && p.getSubPart().size() > 0) {
       System.out.println(tab + "Sub Parts:");
       
       for(Part s : p.getSubPart().toArray()) {
@@ -56,7 +57,11 @@ public class Client {
   }
   
   public void addsubpart(int n) {
-    Part p = this.currPart.clone();
+	  /**
+	   * TODO achar substituto para .clone() em List
+	   */
+  //  Part p = this.currPart.clone(); n tem clone para lista
+	  Part p = this.currPart;  
     p.setQuant(n);
     this.currPart.getSubPart().add(p);
   }

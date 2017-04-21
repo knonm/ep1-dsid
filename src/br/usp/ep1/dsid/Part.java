@@ -1,6 +1,7 @@
 package br.usp.ep1.dsid;
 
 import java.util.List;
+import java.util.Map;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

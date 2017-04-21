@@ -3,6 +3,7 @@ package br.usp.ep1.dsid;
 import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
@@ -13,14 +14,24 @@ public class Server implements PartRepository {
   
   private Map<Long, Part> parts;
   
+  /**
+   * TODO esta tentando usar Map aqui para Part enquanto usa List em tudo, n funfa
+   */
+  
   public Server() {
     this.parts = new HashMap<Long, Part>();
+	
   }
   
-  public void addPart(Part p) {
+  /**
+   * TODO nao esta achando o .max da collection
+   */
+  public void addPart(Part p){
+	  /*
     long id = Collection.max(this.parts.keySet()) + 1;
     p.setId(id);
     this.parts.put(id, p);
+    */
   }
   
   public Part getPart(long id) {
@@ -28,7 +39,7 @@ public class Server implements PartRepository {
   }
   
   public Map<Part> getPartList() {
-    return this.parts;
+	  return this.parts;
   }
   
   public static void main(String[] args) {
