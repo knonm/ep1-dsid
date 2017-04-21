@@ -1,24 +1,34 @@
 package br.usp.ep1.dsid;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.RemoteException;
+import java.rmi.NotBoundException;
 
 public class Client {
   
+  private Registry registry;
   private PartRepository partRepo;
   private Part currPart;
+  private Map<Integer, Part> currSubPart;
+  private Map<Integer, Integer> currSubPartQuant;
   
-  private Client() {}
+  public Client(Registry registry) {
+    this.registry = registry;
+    this.currSubPart = new HashMap<Integer, Part>();
+    this.currSubPartQuant = new HashMap<Integer, Integer>();
+  }
   
-  /*
-  public void bind(String repoName) {
-	  this.partRepo = (PartRepository) registry.lookup(repoName);
-  }*/
+  public void bind(String repoName) throws RemoteException, NotBoundException {
+	  this.partRepo = (PartRepository) this.registry.lookup(repoName);
+  }
   
-  public void listp() {
-    Iterator<Part> it = this.partRepo.getPartList().values().iterator();
+  public void listp() throws RemoteException {
+    Iterator<Part> it = this.partRepo.getPartList();
     Part p;
     
     while(it.hasNext()) {
@@ -27,11 +37,11 @@ public class Client {
     }
   }
   
-  public void getp(long id) {
+  public void getp(int id) throws RemoteException {
     this.currPart = this.partRepo.getPart(id);
   }
   
-  public void showp(Part p, int depth) {
+  public void showp(Part p, int depth) throws RemoteException {
     String tab = "";
     
     for(int i = 0; i < depth; i++) {
@@ -43,27 +53,38 @@ public class Client {
     System.out.println(tab + "Description: " + p.getDesc());
     System.out.println(tab + "Part quantity: " + p.getQuant());
     
-    if (p.getSubPart() != null && p.getSubPart().size() > 0) {
+    if (p.getSubPart().size() > 0) {
       System.out.println(tab + "Sub Parts:");
       
-      for(Part s : p.getSubPart().toArray()) {
+      for(Part s : p.getSubPart().values().toArray(new PartImpl[0])) {
+        System.out.println(tab + "  " + "Part quantity: " + p.getQuant().get(s.hashCode()));
         this.showp(s, depth+1);
       }
     }
   }
   
   public void clearlist() {
-    this.currPart.getSubPart().clear();
+    this.currSubPart.clear();
   }
   
-  public void addsubpart(int n) {
-	  /**
-	   * TODO achar substituto para .clone() em List
-	   */
-  //  Part p = this.currPart.clone(); n tem clone para lista
-	  Part p = this.currPart;  
-    p.setQuant(n);
-    this.currPart.getSubPart().add(p);
+  public void addsubpart(int n) throws RemoteException {
+    int id = this.currPart.getId();
+    if(this.currSubPart.containsKey(id)) {
+      int quant = this.currSubPartQuant.get(id);
+      this.currSubPartQuant.replace(id, quant+n);
+    } else {
+      this.currSubPart.put(this.currPart.getId(), this.currPart);
+      this.currSubPartQuant.put(id, n);
+    }
+  }
+  
+  public void addp(String name, String desc) throws RemoteException, CloneNotSupportedException {
+    Part p = new PartImpl();
+    p.setName(name);
+    p.setDesc(desc);
+    p.setSubPart(this.currSubPart);
+    p.setQuant(this.currSubPartQuant);
+    this.partRepo.addPart(p);
   }
   
   public static void main(String[] args) {

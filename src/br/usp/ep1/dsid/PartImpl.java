@@ -1,22 +1,39 @@
 package br.usp.ep1.dsid;
 
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import java.io.Serializable;
 
 public class PartImpl implements Part, Serializable {
   
-  private long id;
+  private int id;
+  private PartRepository repo;
   private String name;
   private String desc;
-  private List<Part> subPart;
-  private int quant;
+  private Map<Integer, Part> subPart;
+  private Map<Integer, Integer> quant;
   
-  public long getId() {
+  public PartImpl() {
+    this.subPart = new HashMap<Integer, Part>();
+    this.quant = new HashMap<Integer, Integer>();
+    this.id = this.hashCode();
+  }
+  
+  public int getId() {
     return this.id;
   }
-  public void setId(long id) {
+  public void setId(int id) {
     this.id = id;
+  }
+  
+  public PartRepository getRepo() {
+    return this.repo;
+  }
+  public void setRepo(PartRepository repo) {
+    this.repo = repo;
   }
   
   public String getName() {
@@ -33,17 +50,21 @@ public class PartImpl implements Part, Serializable {
     this.desc = desc;
   }
   
-  public List<Part> getSubPart() {
+  public Map<Integer, Part> getSubPart() {
     return this.subPart;
   }
-  public void setSubPart(List<Part> subPart) {
+  public void setSubPart(Map<Integer, Part> subPart) {
     this.subPart = subPart;
   }
   
-  public int getQuant() {
+  public Map<Integer, Integer> getQuant() {
     return this.quant;
   }
-  public void setQuant(int quant) {
+  public void setQuant(Map<Integer, Integer> quant) {
     this.quant = quant;
+  }
+  
+  public Part clone() throws CloneNotSupportedException {
+    return (PartImpl) super.clone();
   }
 }
