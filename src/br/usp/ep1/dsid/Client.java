@@ -31,17 +31,25 @@ public class Client {
   }
   
   public void listp() throws RemoteException {
-    Iterator<Part> it = this.partRepo.getPartList().iterator();
-    Part p;
+	  try {
+        Iterator<Part> it = this.partRepo.getPartList().iterator();
+        Part p;
     
-    while(it.hasNext()) {
-      p = it.next();
-      System.out.println(p.getId() + ": " + p.getName());
-    }
-  }
+        while(it.hasNext()) {
+          p = it.next();
+          System.out.println(p.getId() + ": " + p.getName());
+        }
+	  } catch(NullPointerException e){
+		  System.out.println("There are no parts registered in this repository");
+	  }
+}
   
   public void getp(int id) throws RemoteException {
-    this.currPart = this.partRepo.getPart(id);
+	try {
+      this.currPart = this.partRepo.getPart(id);
+	} catch(NullPointerException e){
+		  System.out.println("There isn't a part registered with this id");
+	  }
   }
   
   public void showp() throws RemoteException {
@@ -74,14 +82,18 @@ public class Client {
   }
   
   public void addsubpart(int n) throws RemoteException {
-    int id = this.currPart.getId();
-    if(this.currSubPart.containsKey(id)) {
-      int quant = this.currSubPartQuant.get(id);
-      this.currSubPartQuant.replace(id, quant+n);
-    } else {
-      this.currSubPart.put(this.currPart.getId(), this.currPart);
-      this.currSubPartQuant.put(id, n);
-    }
+	try {
+      int id = this.currPart.getId();
+      if(this.currSubPart.containsKey(id)) {
+        int quant = this.currSubPartQuant.get(id);
+        this.currSubPartQuant.replace(id, quant+n);
+      } else {
+        this.currSubPart.put(this.currPart.getId(), this.currPart);
+        this.currSubPartQuant.put(id, n);
+      }
+	} catch(NullPointerException e){
+		  System.out.print("There isn't a part registered yet in this server. Please register one before adding subparts");
+	  }
   }
   
   public void addp(String name, String desc) throws RemoteException, CloneNotSupportedException {
@@ -110,12 +122,12 @@ public class Client {
       String opt = "";
       
       while(opt != "exit") {
-        System.out.println("Enter an option: ");
-        opt = reader.next();
+        System.out.println("\n" + "Enter an option or -h for help: ");
+        opt = reader.nextLine();
         switch(opt) {
           case "bind":
             System.out.println("Enter the server name: ");
-            String repo = reader.next();
+            String repo = reader.nextLine();
             client.bind(repo);
             break;
           case "listp":
@@ -139,11 +151,29 @@ public class Client {
             break;
           case "addp":
             System.out.println("Enter the part name: ");
-            String name = reader.next();
+            String name = reader.nextLine();
             System.out.println("Enter the description: ");
-            String desc = reader.next();
+            String desc = reader.nextLine();
             client.addp(name, desc);
             break;
+		  case "-h": 
+			System.out.println("Entries and what they do:" + "\n" 
+								+ "bind, to add new server" + "\n"
+								+ "listp, show the list of parts in the current server" + "\n"
+								+ "getp, show the part by the id" + "\n"
+								+ "clearlist, clear the parts list" + "\n"
+								+ "addsubpart, add subparts to the current part" + "\n"
+								+ "addp, add a new part to the registry" + "\n"
+								+ "exit, to exit program"); 
+			break;
+		  case "exit":
+			System.exit(0);
+			break;
+		  case "":
+			break;
+		default:
+			System.err.println("Command not found: ");
+			break;
         }
       }
        
