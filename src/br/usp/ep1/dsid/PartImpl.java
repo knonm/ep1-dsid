@@ -12,10 +12,12 @@ public class PartImpl implements Part {
   private Map<Integer, Part> subPart;
   private Map<Integer, Integer> quant;
   
-  public PartImpl() {
+  public PartImpl(String name, String desc) {
+	this.id = this.hashCode();
+	this.name = name;
+	this.desc = desc;
     this.subPart = new HashMap<Integer, Part>();
     this.quant = new HashMap<Integer, Integer>();
-    this.id = this.hashCode();
   }
   
   public int getId() {

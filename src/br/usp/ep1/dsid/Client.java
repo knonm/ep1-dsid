@@ -97,12 +97,13 @@ public class Client {
   }
   
   public void addp(String name, String desc) throws RemoteException, CloneNotSupportedException {
-    Part p = new PartImpl();
+    /*Part p = new PartImpl();
     p.setName(name);
     p.setDesc(desc);
     p.setSubPart(this.currSubPart);
-    p.setQuant(this.currSubPartQuant);
-    this.partRepo.addPart(p);
+    p.setQuant(this.currSubPartQuant); */
+    this.partRepo.addPart(new PartImpl(name, desc));
+	//this.currPart = p;
   }
   
   public static void main(String[] args) {
@@ -151,9 +152,9 @@ public class Client {
             break;
           case "addp":
             System.out.println("Enter the part name: ");
-            String name = reader.nextLine();
+            String name = reader.next();
             System.out.println("Enter the description: ");
-            String desc = reader.nextLine();
+            String desc = reader.next();
             client.addp(name, desc);
             break;
 		  case "-h": 
