@@ -96,6 +96,7 @@ public class Client {
 	  }
   }
   
+
   public void addp(String name, String desc) throws RemoteException, CloneNotSupportedException {
     /*Part p = new PartImpl();
     p.setName(name);
