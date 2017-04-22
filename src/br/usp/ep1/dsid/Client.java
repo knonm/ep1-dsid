@@ -1,6 +1,9 @@
 package br.usp.ep1.dsid;
 
+import java.util.Scanner;
+
 import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -28,7 +31,7 @@ public class Client {
   }
   
   public void listp() throws RemoteException {
-    Iterator<Part> it = this.partRepo.getPartList();
+    Iterator<Part> it = this.partRepo.getPartList().iterator();
     Part p;
     
     while(it.hasNext()) {
@@ -41,7 +44,11 @@ public class Client {
     this.currPart = this.partRepo.getPart(id);
   }
   
-  public void showp(Part p, int depth) throws RemoteException {
+  public void showp() throws RemoteException {
+    this.showp(this.currPart, 0);
+  }
+  
+  private void showp(Part p, int depth) throws RemoteException {
     String tab = "";
     
     for(int i = 0; i < depth; i++) {
@@ -51,13 +58,12 @@ public class Client {
     System.out.println(tab + "Id: " + p.getId());
     System.out.println(tab + "Name: " + p.getName());
     System.out.println(tab + "Description: " + p.getDesc());
-    System.out.println(tab + "Part quantity: " + p.getQuant());
     
     if (p.getSubPart().size() > 0) {
       System.out.println(tab + "Sub Parts:");
       
       for(Part s : p.getSubPart().values().toArray(new PartImpl[0])) {
-        System.out.println(tab + "  " + "Part quantity: " + p.getQuant().get(s.hashCode()));
+        System.out.println(tab + "  " + "Part quantity: " + p.getQuant().get(s.getId()));
         this.showp(s, depth+1);
       }
     }
@@ -98,11 +104,49 @@ public class Client {
       // Running on port 1099 by default
       Registry registry = LocateRegistry.getRegistry(host, port);
       PartRepository stub = (PartRepository) registry.lookup(stubName);
-      Part p = new PartImpl();
-      p.setName("TestRMI");
-      stub.addPart(p);
-      Part response = stub.getPart(0);
-      System.out.println("response: " + response.getName());  
+      
+      Scanner reader = new Scanner(System.in);
+      Client client = new Client(registry);
+      String opt = "";
+      
+      while(opt != "exit") {
+        System.out.println("Enter an option: ");
+        opt = reader.next();
+        switch(opt) {
+          case "bind":
+            System.out.println("Enter the server name: ");
+            String repo = reader.next();
+            client.bind(repo);
+            break;
+          case "listp":
+            client.listp();
+            break;
+          case "getp":
+            System.out.println("Enter the part id: ");
+            int id = reader.nextInt();
+            client.getp(id);
+            break;
+          case "showp":
+            client.showp();
+            break;
+          case "clearlist":
+            client.clearlist();
+            break;
+          case "addsubpart":
+            System.out.println("Enter how many subparts do you want to add: ");
+            int n = reader.nextInt();
+            client.addsubpart(n);
+            break;
+          case "addp":
+            System.out.println("Enter the part name: ");
+            String name = reader.next();
+            System.out.println("Enter the description: ");
+            String desc = reader.next();
+            client.addp(name, desc);
+            break;
+        }
+      }
+       
     } catch (Exception e) {
       System.err.println("Client exception: " + e.toString());
       e.printStackTrace();

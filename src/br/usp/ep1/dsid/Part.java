@@ -5,7 +5,9 @@ import java.util.Map;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface Part extends Remote, Cloneable {
+import java.io.Serializable;
+
+public interface Part extends Remote, Cloneable, Serializable {
   
   public int getId() throws RemoteException;
   public void setId(int id) throws RemoteException;

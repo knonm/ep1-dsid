@@ -3,6 +3,7 @@ package br.usp.ep1.dsid;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
@@ -35,8 +36,8 @@ public class Server implements PartRepository {
     return this.parts.get(id);
   }
   
-  public Iterator<Part> getPartList() {
-    return this.parts.values().iterator();
+  public ArrayList<Part> getPartList() {
+    return new ArrayList<Part>(this.parts.values());
   }
   
   public static void main(String[] args) {

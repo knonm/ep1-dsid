@@ -1,13 +1,9 @@
 package br.usp.ep1.dsid;
 
-import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import java.io.Serializable;
-
-public class PartImpl implements Part, Serializable {
+public class PartImpl implements Part {
   
   private int id;
   private PartRepository repo;
