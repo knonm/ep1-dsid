@@ -34,21 +34,13 @@ case "${v_cmd}" in
   stop)
     if [[ -d "${v_tmp}" ]]
     then
-      if [[ ! -z "$(ls ${v_tmp} | grep ^${v_cntservers}$)" ]]
-      then
-        echo "Stopping process number ${v_cntservers} ..."
-        kill -9 $(echo $(cat ${v_tmp}/${v_cntservers})) 2>/dev/null
-        echo "Process ${v_cntservers} stopped!"
-        rm ${v_tmp}/${v_cntservers}
-      else
-        echo "Stopping rmiregistry and server(s) ..."
-        for k in $(ls ${v_tmp})
-        do
-          kill -9 $(echo $(cat ${v_tmp}/${k})) 2>/dev/null
-        done
-        echo "rmiregistry and server(s) are stopped!"
-        rm -rf ${v_tmp} 2>/dev/null
-      fi
+      echo "Stopping rmiregistry and server(s) ..."
+      for k in $(ls ${v_tmp})
+      do
+        kill -9 $(echo $(cat ${v_tmp}/${k})) 2>/dev/null
+      done
+      echo "rmiregistry and server(s) are stopped!"
+      rm -rf ${v_tmp} 2>/dev/null
     fi
     ;;
   list)

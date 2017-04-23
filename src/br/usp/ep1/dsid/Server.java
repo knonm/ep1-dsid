@@ -4,10 +4,12 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class Server implements PartRepository {
@@ -41,20 +43,23 @@ public class Server implements PartRepository {
   }
   
   public static void main(String[] args) {
-    
     String stubId = (args.length < 1) ? "1" : args[0];
     String stubName = "PartRepository_" + stubId;
+    
     try {
+      Registry registry = LocateRegistry.getRegistry("127.0.0.1", 2001);
+
       Server obj = new Server(stubName);
       PartRepository stub = (PartRepository) UnicastRemoteObject.exportObject
         (obj, 0);
       
       // Bind the remote object's stub in the RMI registry
       // Running on port 1099 by default
-      Registry registry = LocateRegistry.getRegistry("127.0.0.1", 2001);
       registry.bind(stubName, stub);
       
-      System.out.println("Server " + stubId + " ready (stub " + stubName + ")");
+      System.out.println("Server '" + stubName + "' ready");  
+    } catch (AlreadyBoundException abe) {
+      System.err.println("Server '" + stubName + "' already exists!");
     } catch (Exception e) {
       System.err.println("Server exception: " + e.toString());
       e.printStackTrace();
