@@ -49,6 +49,7 @@ public class Client {
       for(String repoName : this.registry.list()) {
         repo = (PartRepository) this.registry.lookup(repoName);
         int qtdParts = repo.getPartList().size();
+        System.out.println("Server hostname: " + repo.getHost());
         System.out.println("Server name: " + repo.getId());
         System.out.println("Server part quantity: " + qtdParts);
         System.out.println();
@@ -58,9 +59,13 @@ public class Client {
     }
   }
   
-  public void bind(String repoName) throws RemoteException {
+  public void bind(String host, String repoName) throws RemoteException {
     try {
+      if(this.partRepo != null && !this.partRepo.getHost().equals(host)) {
+          this.registry = LocateRegistry.getRegistry(host, 2001);
+      }
       this.partRepo = (PartRepository) this.registry.lookup(repoName);
+      System.out.println("You are now connected to " + this.partRepo.getId());
     } catch (NotBoundException e) {
       System.out.println("Repository doesn't exists. Use the command 'listrepo' to list the repositories (servers).");
     }
@@ -68,6 +73,7 @@ public class Client {
   
   public void currrepo() throws RemoteException {
     if(this.validateRepo()) {
+      System.out.println("Server host (current): " + this.partRepo.getHost());
       System.out.println("Server name (current): " + this.partRepo.getId());
       System.out.println("Server part quantity: " + this.partRepo.getPartList().size());
       System.out.println();
@@ -162,6 +168,7 @@ public class Client {
       p.setSubPart(this.currSubPart);
       p.setQuant(this.currSubPartQuant);
       this.partRepo.addPart(p);
+      System.out.println("Part added: ID " + p.getId());
     }
   }
   
@@ -188,10 +195,12 @@ public class Client {
             client.currrepo();
             break;
           case "bind":
+            System.out.print("Enter the server host: ");
+            String h = reader.nextLine();
             System.out.print("Enter the server name: ");
             String repo = reader.nextLine();
             System.out.println();
-            client.bind(repo);
+            client.bind(h, repo);
             break;
           case "listp":
             client.listp();
@@ -230,6 +239,7 @@ public class Client {
                       + "currrepo: Show current server" + "\n"
                       + "bind: To add new server" + "\n"
                       + "listp: Show the list of parts in the current server" + "\n"
+                      + "showp: Show the current part" + "\n"
                       + "getp: Show the part by the id" + "\n"
                       + "clearlist: Clear the parts list" + "\n"
                       + "addsubpart: Add subparts to the current part" + "\n"

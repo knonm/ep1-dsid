@@ -1,7 +1,7 @@
 #!/bin/bash
 v_cmd=${1}
 v_cntservers=${2}
-v_host_name="127.0.0.1"
+v_host_name=$(host $(hostname) | cut -d " " -f 4 | head -1)
 v_port="2001"
 v_classpath="$(pwd)/build/"
 v_tmp="./tmp"
@@ -25,7 +25,7 @@ case "${v_cmd}" in
     v_stubmaxid=$(echo $(ls ${v_tmp} | sort -r -n) | cut -d " " -f 1)
     for ((v_stubid=v_stubmaxid+1; v_stubid<=v_stubmaxid+${v_cntservers}; v_stubid++))
     do
-      java -classpath "${v_classpath}" br.usp.ep1.dsid.Server ${v_stubid} &
+      java -classpath "${v_classpath}" br.usp.ep1.dsid.Server ${v_stubid} ${v_host_name} &
       sleep .5
       echo $! 1>${v_tmp}/${v_stubid}
     done

@@ -15,15 +15,21 @@ import java.rmi.server.UnicastRemoteObject;
 public class Server implements PartRepository {
   
   private String id;
+  private String host;
   private Map<Integer, Part> parts;
   
-  public Server(String id) {
+  public Server(String id, String host) {
     this.parts = new HashMap<Integer, Part>();
     this.id = id;
+    this.host = host;
   }
   
   public String getId() {
     return this.id;
+  }
+  
+  public String getHost() {
+    return this.host;
   }
   
   public void addPart(Part part) throws RemoteException, CloneNotSupportedException {
@@ -44,12 +50,14 @@ public class Server implements PartRepository {
   
   public static void main(String[] args) {
     String stubId = (args.length < 1) ? "1" : args[0];
+    String host = (args.length < 2) ? "127.0.0.1" : args[1];
+    
     String stubName = "PartRepository_" + stubId;
     
     try {
       Registry registry = LocateRegistry.getRegistry("127.0.0.1", 2001);
 
-      Server obj = new Server(stubName);
+      Server obj = new Server(stubName, host);
       PartRepository stub = (PartRepository) UnicastRemoteObject.exportObject
         (obj, 0);
       
